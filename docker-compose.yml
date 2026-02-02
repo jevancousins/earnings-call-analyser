@@ -1,0 +1,67 @@
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: earnings-analyzer-db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-earnings_analyzer}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # FastAPI Backend
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+    container_name: earnings-analyzer-api
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/earnings_analyzer
+      - EARNINGSCALL_API_KEY=${EARNINGSCALL_API_KEY:-}
+      - FINNHUB_API_KEY=${FINNHUB_API_KEY:-}
+      - ALPHAVANTAGE_API_KEY=${ALPHAVANTAGE_API_KEY:-}
+      - FMP_API_KEY=${FMP_API_KEY:-}
+      - TRANSCRIPT_PROVIDERS=${TRANSCRIPT_PROVIDERS:-earningscall,finnhub,alphavantage,fmp}
+      - MODEL_DEVICE=cpu
+      - DEBUG=true
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./models:/app/models
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Streamlit Dashboard
+  dashboard:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.dashboard
+    container_name: earnings-analyzer-dashboard
+    environment:
+      - API_URL=http://api:8000
+    ports:
+      - "8501:8501"
+    depends_on:
+      - api
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:

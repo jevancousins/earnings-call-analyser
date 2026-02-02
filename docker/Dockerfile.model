@@ -1,0 +1,33 @@
+# Model serving Dockerfile
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements first
+COPY pyproject.toml ./
+
+# Install Python dependencies (including PyTorch)
+RUN pip install --no-cache-dir -e .
+
+# Download and cache FinBERT model
+RUN python -c "from transformers import AutoModel, AutoTokenizer; \
+    AutoModel.from_pretrained('ProsusAI/finbert'); \
+    AutoTokenizer.from_pretrained('ProsusAI/finbert')"
+
+# Copy application code
+COPY src/ ./src/
+
+# Create non-root user
+RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
+USER appuser
+
+# Expose port for model serving (if needed)
+EXPOSE 8080
+
+CMD ["python", "-c", "print('Model container ready')"]

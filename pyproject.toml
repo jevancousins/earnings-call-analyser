@@ -1,0 +1,88 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "earnings-call-analyzer"
+version = "0.1.0"
+description = "PyTorch-based NLP system measuring management Q&A alignment in earnings calls"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [
+    { name = "Jevan Cousins" }
+]
+keywords = ["nlp", "pytorch", "finance", "earnings-calls", "finbert"]
+
+dependencies = [
+    # Core ML
+    "torch>=2.0.0",
+    "transformers>=4.35.0",
+    "sentence-transformers>=2.2.0",
+
+    # Data processing
+    "pandas>=2.0.0",
+    "numpy>=1.24.0",
+
+    # API & Web
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+    "httpx>=0.25.0",
+    "aiohttp>=3.9.0",
+
+    # Dashboard
+    "streamlit>=1.28.0",
+    "plotly>=5.18.0",
+
+    # Database
+    "sqlalchemy>=2.0.0",
+    "psycopg2-binary>=2.9.0",
+    "alembic>=1.12.0",
+
+    # Finance data
+    "yfinance>=0.2.0",
+
+    # Utilities
+    "python-dotenv>=1.0.0",
+    "pydantic>=2.0.0",
+    "pydantic-settings>=2.0.0",
+    "tenacity>=8.2.0",
+    "tqdm>=4.66.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.1.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.6.0",
+    "pre-commit>=3.5.0",
+]
+
+[project.scripts]
+earnings-analyzer = "src.api.main:run"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+
+[tool.black]
+line-length = 100
+target-version = ["py310"]
+
+[tool.ruff]
+line-length = 100
+select = ["E", "F", "I", "N", "W", "UP"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_ignores = true
+disallow_untyped_defs = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+addopts = "-v --tb=short"

@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: earnings-analyzer-config
+  namespace: earnings-analyzer
+data:
+  # Database
+  POSTGRES_DB: "earnings_analyzer"
+  POSTGRES_USER: "postgres"
+
+  # API Settings
+  API_HOST: "0.0.0.0"
+  API_PORT: "8000"
+  DEBUG: "false"
+
+  # Model Settings
+  MODEL_DEVICE: "cpu"
+  FINBERT_MODEL: "ProsusAI/finbert"
+  BATCH_SIZE: "32"
+
+  # Dashboard
+  STREAMLIT_PORT: "8501"
