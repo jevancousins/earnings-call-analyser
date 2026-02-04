@@ -20,20 +20,20 @@ settings = get_settings()
 async def lifespan(app: FastAPI) -> Any:
     """Application lifespan manager."""
     # Startup
-    logger.info("Starting Earnings Call Analyzer API")
+    logger.info("Starting Earnings Call Analyser API")
     init_db()
     logger.info("Database initialized")
 
     yield
 
     # Shutdown
-    logger.info("Shutting down Earnings Call Analyzer API")
+    logger.info("Shutting down Earnings Call Analyser API")
 
 
 app = FastAPI(
-    title="Earnings Call Q&A Alignment Analyzer",
+    title="Earnings Call Q&A Alignment Analyser",
     description="""
-    Analyze management Q&A alignment in earnings calls using NLP.
+    Analyse management Q&A alignment in earnings calls using NLP.
 
     **Key Features:**
     - Extract Q&A pairs from earnings call transcripts
@@ -42,7 +42,7 @@ app = FastAPI(
     - Backtest alignment signals against stock returns
 
     **API Endpoints:**
-    - `/api/analyze` - Analyze a new earnings call transcript
+    - `/api/analyse` - Analyse a new earnings call transcript
     - `/api/companies/{ticker}/alignment` - Get historical alignment scores
     - `/api/compare` - Compare alignment across multiple companies
     - `/api/backtest` - Run backtest analysis
@@ -73,7 +73,7 @@ app.include_router(backtest.router, prefix="/api/backtest", tags=["Backtest"])
 async def root() -> dict[str, str]:
     """Root endpoint with API information."""
     return {
-        "name": "Earnings Call Q&A Alignment Analyzer",
+        "name": "Earnings Call Q&A Alignment Analyser",
         "version": "0.1.0",
         "docs": "/docs",
         "health": "/health",

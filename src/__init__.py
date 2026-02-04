@@ -1,3 +1,3 @@
-"""Earnings Call Q&A Alignment Analyzer."""
+"""Earnings Call Q&A Alignment Analyser."""
 
 __version__ = "0.1.0"

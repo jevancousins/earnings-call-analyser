@@ -1,4 +1,4 @@
-# Earnings Call Q&A Alignment Analyzer
+# Earnings Call Q&A Alignment Analyser
 
 ## Project Overview
 

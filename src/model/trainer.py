@@ -109,7 +109,7 @@ class QADataset(Dataset):
 class TrainingConfig:
     """Configuration for model training."""
 
-    # Optimization
+    # Optimisation
     learning_rate: float = 1e-4
     weight_decay: float = 0.01
     warmup_steps: int = 100
@@ -160,8 +160,8 @@ class AlignmentTrainer:
             contrastive_weight=self.config.contrastive_weight,
         )
 
-        # Setup optimizer
-        self.optimizer = AdamW(
+        # Setup optimiser
+        self.optimiser = AdamW(
             self.model.parameters(),
             lr=self.config.learning_rate,
             weight_decay=self.config.weight_decay,
@@ -177,14 +177,14 @@ class AlignmentTrainer:
         """Setup learning rate scheduler."""
         if self.config.scheduler == "onecycle":
             return OneCycleLR(
-                self.optimizer,
+                self.optimiser,
                 max_lr=self.config.learning_rate,
                 total_steps=num_training_steps,
                 pct_start=0.1,
             )
         else:  # cosine
             return CosineAnnealingLR(
-                self.optimizer,
+                self.optimiser,
                 T_max=num_training_steps,
                 eta_min=self.config.learning_rate / 10,
             )
@@ -229,13 +229,13 @@ class AlignmentTrainer:
             loss, loss_components = self.loss_fn(output, labels, scores, is_matched)
 
             # Backward pass
-            self.optimizer.zero_grad()
+            self.optimiser.zero_grad()
             loss.backward()
 
             # Gradient clipping
             nn.utils.clip_grad_norm_(self.model.parameters(), max_norm=1.0)
 
-            self.optimizer.step()
+            self.optimiser.step()
 
             if scheduler is not None:
                 scheduler.step()
@@ -393,7 +393,7 @@ class AlignmentTrainer:
         """
         checkpoint = {
             "model_state_dict": self.model.state_dict(),
-            "optimizer_state_dict": self.optimizer.state_dict(),
+            "optimiser_state_dict": self.optimiser.state_dict(),
             "epoch": self.current_epoch,
             "metrics": metrics,
             "config": self.config,
@@ -412,7 +412,7 @@ class AlignmentTrainer:
         """
         checkpoint = torch.load(path, map_location=self.device)
         self.model.load_state_dict(checkpoint["model_state_dict"])
-        self.optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
+        self.optimiser.load_state_dict(checkpoint["optimiser_state_dict"])
         self.current_epoch = checkpoint["epoch"]
         logger.info(f"Loaded checkpoint from {path}")
         return checkpoint

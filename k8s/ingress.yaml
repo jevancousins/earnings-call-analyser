@@ -1,14 +1,14 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: earnings-analyzer-ingress
-  namespace: earnings-analyzer
+  name: earnings-analyser-ingress
+  namespace: earnings-analyser
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   ingressClassName: nginx
   rules:
-    - host: earnings-analyzer.local
+    - host: earnings-analyser.local
       http:
         paths:
           - path: /api

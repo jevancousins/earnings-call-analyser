@@ -41,7 +41,7 @@ class SECEdgarClient:
     COMPANY_TICKERS_URL = "https://www.sec.gov/files/company_tickers.json"
 
     # Required user agent per SEC guidelines
-    USER_AGENT = "EarningsCallAnalyzer research@example.com"
+    USER_AGENT = "EarningsCallAnalyser research@example.com"
 
     def __init__(self) -> None:
         """Initialize SEC EDGAR client."""

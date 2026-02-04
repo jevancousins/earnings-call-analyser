@@ -1,4 +1,4 @@
-# Earnings Call Q&A Alignment Analyzer
+# Earnings Call Q&A Alignment Analyser
 
 A PyTorch-based NLP system that measures how well management answers analyst questions during earnings calls. **Low alignment (evasive answers) = negative signal for the stock.**
 
@@ -31,7 +31,7 @@ Transcript Ingestion → Q&A Parsing → FinBERT Encoding → Alignment Model �
 
 1. Clone the repository:
 ```bash
-cd earnings-call-analyzer
+cd earnings-call-analyser
 ```
 
 2. Create virtual environment:
@@ -55,7 +55,7 @@ cp .env.example .env
 ```bash
 docker run -d --name postgres -p 5432:5432 \
   -e POSTGRES_PASSWORD=postgres \
-  -e POSTGRES_DB=earnings_analyzer \
+  -e POSTGRES_DB=earnings_analyser \
   postgres:15-alpine
 ```
 
@@ -89,21 +89,21 @@ minikube start
 
 # Build images in Minikube's Docker
 eval $(minikube docker-env)
-docker build -f docker/Dockerfile.api -t earnings-analyzer-api:latest .
-docker build -f docker/Dockerfile.dashboard -t earnings-analyzer-dashboard:latest .
+docker build -f docker/Dockerfile.api -t earnings-analyser-api:latest .
+docker build -f docker/Dockerfile.dashboard -t earnings-analyser-dashboard:latest .
 
 # Apply manifests
 kubectl apply -f k8s/
 
 # Get dashboard URL
-minikube service dashboard-service -n earnings-analyzer --url
+minikube service dashboard-service -n earnings-analyser --url
 ```
 
 ## API Endpoints
 
 | Endpoint | Method | Description |
 |----------|--------|-------------|
-| `/api/analyze` | POST | Analyse a new transcript |
+| `/api/analyse` | POST | Analyse a new transcript |
 | `/api/companies/{ticker}/alignment` | GET | Get alignment history |
 | `/api/compare` | POST | Compare multiple companies |
 | `/api/backtest/run` | POST | Run backtest analysis |
@@ -115,7 +115,7 @@ See full API documentation at `/docs` when running the server.
 ## Project Structure
 
 ```
-earnings-call-analyzer/
+earnings-call-analyser/
 ├── src/
 │   ├── data/           # FMP client, SEC client, transcript parser
 │   ├── nlp/            # FinBERT embeddings, question classifier

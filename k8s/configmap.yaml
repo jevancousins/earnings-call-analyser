@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: earnings-analyzer-config
-  namespace: earnings-analyzer
+  name: earnings-analyser-config
+  namespace: earnings-analyser
 data:
   # Database
-  POSTGRES_DB: "earnings_analyzer"
+  POSTGRES_DB: "earnings_analyser"
   POSTGRES_USER: "postgres"
 
   # API Settings

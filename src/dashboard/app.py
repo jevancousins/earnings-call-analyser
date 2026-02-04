@@ -11,7 +11,7 @@ import streamlit as st
 from plotly.subplots import make_subplots
 
 st.set_page_config(
-    page_title="Earnings Call Analyzer",
+    page_title="Earnings Call Analyser",
     page_icon="📊",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -28,10 +28,10 @@ def get_api_client() -> httpx.Client:
 
 def main() -> None:
     """Main dashboard application."""
-    st.title("Earnings Call Q&A Alignment Analyzer")
+    st.title("Earnings Call Q&A Alignment Analyser")
 
     st.markdown("""
-    Analyze how well management answers analyst questions during earnings calls.
+    Analyse how well management answers analyst questions during earnings calls.
     **Low alignment (evasive answers) = negative signal for the stock.**
 
     Based on [Chiang et al. 2025](https://www.frontiersin.org/journals/artificial-intelligence/articles/10.3389/frai.2025.1608365/full) research.
@@ -42,15 +42,15 @@ def main() -> None:
     page = st.sidebar.radio(
         "Select Page",
         [
-            "Analyze Earnings Call",
+            "Analyse Earnings Call",
             "Company Analysis",
             "Q&A Explorer",
             "Backtest Results",
         ],
     )
 
-    if page == "Analyze Earnings Call":
-        show_analyze_page()
+    if page == "Analyse Earnings Call":
+        show_analyse_page()
     elif page == "Company Analysis":
         show_company_analysis()
     elif page == "Q&A Explorer":
@@ -59,13 +59,13 @@ def main() -> None:
         show_backtest_results()
 
 
-def show_analyze_page() -> None:
-    """Show page to analyze new earnings calls."""
-    st.header("Analyze Earnings Call")
+def show_analyse_page() -> None:
+    """Show page to analyse new earnings calls."""
+    st.header("Analyse Earnings Call")
 
     st.markdown("""
-    Fetch and analyze recent earnings call transcripts. Enter a ticker symbol
-    and optionally specify the quarter to analyze.
+    Fetch and analyse recent earnings call transcripts. Enter a ticker symbol
+    and optionally specify the quarter to analyse.
     """)
 
     # Show available data providers
@@ -167,16 +167,16 @@ def show_analyze_page() -> None:
                 except Exception as e:
                     st.error(f"Error reading PDF: {e}")
 
-    analyze_btn = st.button("Analyze Transcript", type="primary")
+    analyse_btn = st.button("Analyse Transcript", type="primary")
 
-    if analyze_btn and ticker:
+    if analyse_btn and ticker:
         # Validate input
         if input_mode != "Fetch from API" and not manual_transcript:
             st.error("Please provide transcript text or upload a file.")
         else:
             with st.spinner(f"Fetching and analyzing {ticker} Q{quarter} {year} earnings call..."):
                 try:
-                    result = analyze_transcript(
+                    result = analyse_transcript(
                         ticker, year, quarter,
                         manual_transcript=manual_transcript if input_mode != "Fetch from API" else None
                     )
@@ -188,15 +188,15 @@ def show_analyze_page() -> None:
                     st.error(f"Error: {str(e)}")
 
 
-def analyze_transcript(
+def analyse_transcript(
     ticker: str, year: int, quarter: int, manual_transcript: str | None = None
 ) -> dict | None:
-    """Call API to analyze transcript."""
+    """Call API to analyse transcript."""
     with get_api_client() as client:
         # Determine which endpoint to use
         if manual_transcript:
             response = client.post(
-                "/api/analyze/manual",
+                "/api/analyse/manual",
                 json={
                     "ticker": ticker,
                     "transcript": manual_transcript,
@@ -206,7 +206,7 @@ def analyze_transcript(
             )
         else:
             response = client.post(
-                "/api/analyze",
+                "/api/analyse",
                 json={
                     "ticker": ticker,
                     "fiscal_year": year,
@@ -233,7 +233,7 @@ def analyze_transcript(
         for _ in range(60):  # Max 60 seconds
             time.sleep(1)
 
-            status_response = client.get(f"/api/analyze/{job_id}")
+            status_response = client.get(f"/api/analyse/{job_id}")
             status_data = status_response.json()
 
             progress = status_data.get("progress", 0)
@@ -268,7 +268,7 @@ def display_analysis_result(result: dict) -> None:
         st.metric("Overall Alignment", f"{score:.2f}")
 
     with col2:
-        st.metric("Q&A Pairs Analyzed", result.get("total_qa_pairs", 0))
+        st.metric("Q&A Pairs Analysed", result.get("total_qa_pairs", 0))
 
     with col3:
         # Get dominant category
@@ -380,10 +380,10 @@ def show_company_analysis() -> None:
     st.header("Company Analysis")
 
     st.info("""
-    **To see live data:** Use the "Analyze Earnings Call" page to analyze recent transcripts.
+    **To see live data:** Use the "Analyse Earnings Call" page to analyse recent transcripts.
     Results will be stored and shown here for comparison.
 
-    The alignment timeline below shows sample data. Analyze multiple quarters for a company
+    The alignment timeline below shows sample data. Analyse multiple quarters for a company
     to build up historical data.
     """)
 
@@ -451,7 +451,7 @@ def show_alignment_timeline(ticker: str) -> None:
 
     st.plotly_chart(fig, use_container_width=True)
 
-    st.caption("Note: This shows sample data. Analyze multiple quarters to build historical data.")
+    st.caption("Note: This shows sample data. Analyse multiple quarters to build historical data.")
 
 
 def show_qa_explorer() -> None:
@@ -459,13 +459,13 @@ def show_qa_explorer() -> None:
     st.header("Q&A Pair Explorer")
 
     st.info("""
-    After analyzing earnings calls on the "Analyze Earnings Call" page,
+    After analyzing earnings calls on the "Analyse Earnings Call" page,
     you can explore individual Q&A pairs here.
     """)
 
     # Check if we have analysis results in session state
     if "last_analysis" not in st.session_state:
-        st.warning("No analysis results available. Go to 'Analyze Earnings Call' to analyze a transcript first.")
+        st.warning("No analysis results available. Go to 'Analyse Earnings Call' to analyse a transcript first.")
 
         # Show sample for demonstration
         st.subheader("Sample Q&A Pairs (for demonstration)")
@@ -510,7 +510,7 @@ def show_backtest_results() -> None:
     **Strategy:** Long companies with high alignment (>0.7), short companies with low alignment (<0.3)
 
     This shows hypothetical backtest results based on the research paper findings.
-    To run actual backtests, you need to analyze multiple companies over multiple quarters.
+    To run actual backtests, you need to analyse multiple companies over multiple quarters.
     """)
 
     # Configuration

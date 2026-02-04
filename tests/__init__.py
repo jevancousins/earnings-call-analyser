@@ -1,1 +1,1 @@
-"""Test suite for earnings call analyzer."""
+"""Test suite for earnings call analyser."""

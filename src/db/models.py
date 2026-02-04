@@ -1,4 +1,4 @@
-"""SQLAlchemy ORM models for the earnings call analyzer."""
+"""SQLAlchemy ORM models for the earnings call analyser."""
 
 from datetime import datetime
 from typing import Optional

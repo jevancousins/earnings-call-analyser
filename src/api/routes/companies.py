@@ -21,7 +21,7 @@ class CompanyInfo(BaseModel):
     sector: str | None
     industry: str | None
     market_cap: float | None
-    total_calls_analyzed: int
+    total_calls_analysed: int
     earliest_call: datetime | None
     latest_call: datetime | None
 
@@ -98,7 +98,7 @@ async def list_companies(
                 sector=company.sector,
                 industry=company.industry,
                 market_cap=company.market_cap,
-                total_calls_analyzed=len(calls),
+                total_calls_analysed=len(calls),
                 earliest_call=min((c.call_date for c in calls), default=None),
                 latest_call=max((c.call_date for c in calls), default=None),
             )
@@ -135,7 +135,7 @@ async def get_company(
         sector=company.sector,
         industry=company.industry,
         market_cap=company.market_cap,
-        total_calls_analyzed=len(calls),
+        total_calls_analysed=len(calls),
         earliest_call=min((c.call_date for c in calls), default=None),
         latest_call=max((c.call_date for c in calls), default=None),
     )

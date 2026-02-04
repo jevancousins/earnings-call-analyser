@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: dashboard
-  namespace: earnings-analyzer
+  namespace: earnings-analyser
   labels:
     app: dashboard
 spec:
@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: dashboard
-          image: earnings-analyzer-dashboard:latest
+          image: earnings-analyser-dashboard:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8501
@@ -26,7 +26,7 @@ spec:
               value: "http://api-service:8000"
           envFrom:
             - configMapRef:
-                name: earnings-analyzer-config
+                name: earnings-analyser-config
           resources:
             requests:
               memory: "256Mi"
@@ -56,7 +56,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: dashboard-service
-  namespace: earnings-analyzer
+  namespace: earnings-analyser
 spec:
   selector:
     app: dashboard

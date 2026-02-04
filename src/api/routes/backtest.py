@@ -260,13 +260,13 @@ async def run_backtest(
 
 
 @router.get("/correlation", response_model=CorrelationResult)
-async def analyze_correlation(
+async def analyse_correlation(
     tickers: list[str] | None = Query(None, description="Filter to specific tickers"),
     start_year: int | None = Query(None),
     end_year: int | None = Query(None),
     db: Session = Depends(get_db_dependency),
 ) -> CorrelationResult:
-    """Analyze correlation between alignment scores and stock returns.
+    """Analyse correlation between alignment scores and stock returns.
 
     Args:
         tickers: Optional ticker filter

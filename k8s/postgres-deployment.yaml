@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: postgres
-  namespace: earnings-analyzer
+  namespace: earnings-analyser
   labels:
     app: postgres
 spec:
@@ -22,9 +22,9 @@ spec:
             - containerPort: 5432
           envFrom:
             - configMapRef:
-                name: earnings-analyzer-config
+                name: earnings-analyser-config
             - secretRef:
-                name: earnings-analyzer-secrets
+                name: earnings-analyser-secrets
           volumeMounts:
             - name: postgres-storage
               mountPath: /var/lib/postgresql/data
@@ -61,7 +61,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: postgres-service
-  namespace: earnings-analyzer
+  namespace: earnings-analyser
 spec:
   selector:
     app: postgres
@@ -75,7 +75,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: postgres-pvc
-  namespace: earnings-analyzer
+  namespace: earnings-analyser
 spec:
   accessModes:
     - ReadWriteOnce

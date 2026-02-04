@@ -82,13 +82,13 @@ class AnalysisStatus(BaseModel):
 _analysis_jobs: dict[str, AnalysisStatus] = {}
 
 
-@router.post("/analyze", response_model=AnalysisStatus)
-async def analyze_transcript(
+@router.post("/analyse", response_model=AnalysisStatus)
+async def analyse_transcript(
     input_data: TranscriptInput,
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db_dependency),
 ) -> AnalysisStatus:
-    """Analyze an earnings call transcript.
+    """Analyse an earnings call transcript.
 
     This endpoint initiates analysis of a transcript. For large transcripts,
     processing happens in the background.
@@ -125,13 +125,13 @@ async def analyze_transcript(
     return status
 
 
-@router.post("/analyze/manual", response_model=AnalysisStatus)
-async def analyze_manual_transcript(
+@router.post("/analyse/manual", response_model=AnalysisStatus)
+async def analyse_manual_transcript(
     input_data: ManualTranscriptInput,
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db_dependency),
 ) -> AnalysisStatus:
-    """Analyze a manually submitted transcript.
+    """Analyse a manually submitted transcript.
 
     Use this endpoint when you have transcript text from a source
     not supported by the API (e.g., pasted from investor relations site).
@@ -152,7 +152,7 @@ async def analyze_manual_transcript(
         fiscal_quarter=input_data.fiscal_quarter,
         fetch_from_api=False,
     )
-    return await analyze_transcript(standard_input, background_tasks, db)
+    return await analyse_transcript(standard_input, background_tasks, db)
 
 
 @router.get("/providers", response_model=dict)
@@ -177,7 +177,7 @@ async def get_available_providers() -> dict:
     }
 
 
-@router.get("/analyze/{job_id}", response_model=AnalysisStatus)
+@router.get("/analyse/{job_id}", response_model=AnalysisStatus)
 async def get_analysis_status(job_id: str) -> AnalysisStatus:
     """Get status of an analysis job.
 

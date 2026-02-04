@@ -30,17 +30,17 @@ class TestAPIEndpoints:
         assert response.status_code == 200
         assert response.json()["status"] == "healthy"
 
-    def test_analyze_endpoint_validation(self, client: TestClient) -> None:
-        """Test analyze endpoint validates input."""
+    def test_analyse_endpoint_validation(self, client: TestClient) -> None:
+        """Test analyse endpoint validates input."""
         # Missing required fields
-        response = client.post("/api/analyze", json={})
+        response = client.post("/api/analyse", json={})
 
         assert response.status_code == 422  # Validation error
 
-    def test_analyze_endpoint_accepts_valid_input(self, client: TestClient) -> None:
-        """Test analyze endpoint accepts valid input."""
+    def test_analyse_endpoint_accepts_valid_input(self, client: TestClient) -> None:
+        """Test analyse endpoint accepts valid input."""
         response = client.post(
-            "/api/analyze",
+            "/api/analyse",
             json={
                 "ticker": "AAPL",
                 "fetch_from_api": False,

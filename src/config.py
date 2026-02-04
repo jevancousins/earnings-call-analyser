@@ -26,7 +26,7 @@ class Settings(BaseSettings):
     transcript_providers: list[str] = ["earningscall", "finnhub", "alphavantage", "fmp"]
 
     # Database
-    database_url: str = "postgresql://postgres:postgres@localhost:5432/earnings_analyzer"
+    database_url: str = "postgresql://postgres:postgres@localhost:5432/earnings_analyser"
 
     # API Settings
     api_host: str = "0.0.0.0"

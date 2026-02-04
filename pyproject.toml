@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "earnings-call-analyzer"
+name = "earnings-call-analyser"
 version = "0.1.0"
 description = "PyTorch-based NLP system measuring management Q&A alignment in earnings calls"
 readme = "README.md"
@@ -62,7 +62,7 @@ dev = [
 ]
 
 [project.scripts]
-earnings-analyzer = "src.api.main:run"
+earnings-analyser = "src.api.main:run"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src"]

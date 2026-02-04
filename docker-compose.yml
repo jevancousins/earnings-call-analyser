@@ -2,11 +2,11 @@ services:
   # PostgreSQL Database
   postgres:
     image: postgres:15-alpine
-    container_name: earnings-analyzer-db
+    container_name: earnings-analyser-db
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-      POSTGRES_DB: ${POSTGRES_DB:-earnings_analyzer}
+      POSTGRES_DB: ${POSTGRES_DB:-earnings_analyser}
     ports:
       - "5432:5432"
     volumes:
@@ -22,9 +22,9 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile.api
-    container_name: earnings-analyzer-api
+    container_name: earnings-analyser-api
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/earnings_analyzer
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/earnings_analyser
       - EARNINGSCALL_API_KEY=${EARNINGSCALL_API_KEY:-}
       - FINNHUB_API_KEY=${FINNHUB_API_KEY:-}
       - ALPHAVANTAGE_API_KEY=${ALPHAVANTAGE_API_KEY:-}
@@ -50,7 +50,7 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile.dashboard
-    container_name: earnings-analyzer-dashboard
+    container_name: earnings-analyser-dashboard
     environment:
       - API_URL=http://api:8000
     ports:
