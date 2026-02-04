@@ -199,38 +199,45 @@ class TranscriptParser:
         segments: list[SpeechSegment] = []
 
         # Pattern to match speaker headers
-        # Common formats:
-        # "John Smith - CEO"
-        # "John Smith, Analyst, Goldman Sachs"
-        # "[John Smith] (Analyst)"
-        # "John Smith:"
-        speaker_patterns = [
-            # "Name - Title" or "Name - Company"
-            r"(?P<name>[A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,3})\s*[-–—]\s*(?P<info>[^:\n]+)(?::|$)",
-            # "Name, Title" or "Name, Firm"
-            r"(?P<name>[A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,3})\s*,\s*(?P<info>[^:\n]+)(?::|$)",
-            # [Name] or (Name)
-            r"[\[\(](?P<name>[A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,3})[\]\)]\s*(?P<info>[^:\n]*)(?::|$)",
-            # Simple "Name:"
-            r"(?P<name>[A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,3}):\s*(?P<info>)",
-        ]
-
-        combined_pattern = "|".join(f"(?:{p})" for p in speaker_patterns)
+        # Primary format from EarningsCall: "Name - Title:" on its own line
+        # Also handles: "Name, Title:" and simple "Name:"
+        #
+        # Key: require the pattern to be at start of line and followed by newline
+        # This prevents matching words like "Hey" or "Thanks" mid-sentence
+        speaker_pattern = (
+            r"^([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+){0,4})"  # Name (1-5 words)
+            r"\s*[-–—,]\s*"  # Separator (dash or comma)
+            r"([^:\n]{2,50})"  # Title/Role (2-50 chars, not empty)
+            r":\s*$"  # Colon at end of line
+        )
 
         # Split text by speaker headers
-        parts = re.split(f"({combined_pattern})", text, flags=re.MULTILINE)
+        # re.split with capturing groups returns: [text, full_match, name, title, text, ...]
+        parts = re.split(f"({speaker_pattern})", text, flags=re.MULTILINE)
 
         current_speaker: Speaker | None = None
         current_text_parts: list[str] = []
 
-        for part in parts:
-            if not part or not part.strip():
+        i = 0
+        while i < len(parts):
+            part = parts[i]
+
+            if not part:
+                i += 1
                 continue
 
-            # Try to match as speaker header
-            speaker = self._parse_speaker_header(part)
+            # Check if next parts are captured groups from a speaker match
+            # Pattern: text, full_match, name, title, text...
+            if (
+                i + 3 < len(parts)
+                and parts[i + 1]  # full match
+                and parts[i + 2]  # name
+                and parts[i + 3] is not None  # title (could be empty string)
+            ):
+                # This part is text before the speaker header
+                if part.strip():
+                    current_text_parts.append(part)
 
-            if speaker:
                 # Save previous segment
                 if current_speaker and current_text_parts:
                     text_content = " ".join(current_text_parts).strip()
@@ -243,11 +250,20 @@ class TranscriptParser:
                                 is_question=is_question,
                             )
                         )
-                current_speaker = speaker
-                current_text_parts = []
+                    current_text_parts = []
+
+                # Extract speaker info from captured groups
+                name = parts[i + 2].strip()
+                title_info = parts[i + 3].strip()
+                title, firm, role = self._parse_speaker_info(title_info)
+
+                current_speaker = Speaker(name=name, title=title, firm=firm, role=role)
+                i += 4  # Skip: full_match, name, title
             else:
-                # Add to current speaker's text
-                current_text_parts.append(part)
+                # Regular text content
+                if part.strip():
+                    current_text_parts.append(part)
+                i += 1
 
         # Save final segment
         if current_speaker and current_text_parts:

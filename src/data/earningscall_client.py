@@ -112,10 +112,41 @@ class EarningsCallClient:
             if not company:
                 return None
 
-            # Get transcript with level=4 for Q&A separation
-            transcript = company.get_transcript(year=year, quarter=quarter, level=1)
+            # Get transcript with level=2 for speaker segmentation
+            transcript = company.get_transcript(year=year, quarter=quarter, level=2)
 
-            if not transcript or not transcript.text:
+            if not transcript:
+                return None
+
+            # Format transcript with speaker labels for parsing
+            content_parts = []
+
+            # Check for speaker-segmented data
+            if hasattr(transcript, "speakers") and transcript.speakers:
+                for speaker in transcript.speakers:
+                    name = "Unknown"
+                    title = ""
+                    if hasattr(speaker, "speaker_info") and speaker.speaker_info:
+                        name = speaker.speaker_info.name or "Unknown"
+                        title = speaker.speaker_info.title or ""
+
+                    # Format as "Name - Title: text" for parser compatibility
+                    if title:
+                        header = f"{name} - {title}:"
+                    else:
+                        header = f"{name}:"
+
+                    text = speaker.text if hasattr(speaker, "text") else ""
+                    if text:
+                        content_parts.append(f"{header}\n{text}")
+            elif hasattr(transcript, "text") and transcript.text:
+                # Fallback to raw text
+                content_parts.append(transcript.text)
+            else:
+                return None
+
+            raw_content = "\n\n".join(content_parts)
+            if not raw_content.strip():
                 return None
 
             # Try to get event date
@@ -135,7 +166,7 @@ class EarningsCallClient:
                 fiscal_year=year,
                 fiscal_quarter=quarter,
                 call_date=call_date,
-                raw_content=transcript.text,
+                raw_content=raw_content,
             )
 
         except Exception as e:
