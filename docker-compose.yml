@@ -29,7 +29,8 @@ services:
       - FINNHUB_API_KEY=${FINNHUB_API_KEY:-}
       - ALPHAVANTAGE_API_KEY=${ALPHAVANTAGE_API_KEY:-}
       - FMP_API_KEY=${FMP_API_KEY:-}
-      - TRANSCRIPT_PROVIDERS=${TRANSCRIPT_PROVIDERS:-earningscall,finnhub,alphavantage,fmp}
+      # Note: TRANSCRIPT_PROVIDERS uses JSON format for lists, e.g.: '["earningscall","finnhub"]'
+      # If not set, defaults to: earningscall, finnhub, alphavantage, fmp
       - MODEL_DEVICE=cpu
       - DEBUG=true
     ports:

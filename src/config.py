@@ -23,6 +23,7 @@ class Settings(BaseSettings):
 
     # Transcript Provider Configuration
     # Order determines fallback priority: first available provider is tried first
+    # Note: If setting via env var, use JSON format: '["earningscall","finnhub"]'
     transcript_providers: list[str] = ["earningscall", "finnhub", "alphavantage", "fmp"]
 
     # Database
