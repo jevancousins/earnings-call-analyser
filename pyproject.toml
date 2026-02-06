@@ -41,6 +41,7 @@ dependencies = [
 
     # Finance data
     "yfinance>=0.2.0",
+    "earningscall>=0.0.17",
 
     # Utilities
     "python-dotenv>=1.0.0",
